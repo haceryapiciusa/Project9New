@@ -31,37 +31,46 @@ public class TestCase2 {
         driver.findElement(By.cssSelector("[formcontrolname=\"username\"]")).sendKeys(username);
         driver.findElement(By.cssSelector("[formcontrolname=\"password\"]")).sendKeys(password);
         driver.findElement(By.cssSelector("button[aria-label=\"LOGIN\"]")).click();
+        //cookie part
+        driver.findElement(By.xpath("//a[@class='cc-btn cc-dismiss']")).click();
 
     }
     @Test
-    public void EntranceExams() {
+    @Parameters({"name", "regStart", "regEnd"})
+    public void EntranceExams(String name, String regStart,String regEnd ) {
         //Click on Entrance Exams
-        //Click on setup
         driver.findElement(By.cssSelector("fuse-navigation .group-items > .nav-item:nth-child(2)")).click();
+        //Click on setup
         driver.findElement(By.cssSelector("fuse-navigation .group-items > .nav-item:nth-child(2) > .children > .nav-item:nth-child(1)")).click();
         //Click on Entrance Exams
         driver.findElement(By.cssSelector("fuse-navigation .group-items > .nav-item:nth-child(2) > .children > .nav-item:nth-child(1) > .children > .nav-item:nth-child(1)")).click();
-
         //Click on plus icon
         driver.findElement(By.cssSelector("svg[data-icon='plus']")).click();
+        //Enter name
 
-        //Enter name , academic period , grade level , reg start , reg end
-        driver.findElement(By.cssSelector("ms-text-field>input")).sendKeys("Hacer");
-        driver.findElement(By.xpath("//div[@class='mat-select-value']")).click();
-        driver.findElement(By.xpath("//span[text()=' Academic Period 2019-2020 ']")).click();
+        WebElement findname = driver.findElement(By.cssSelector("ms-text-field>input"));
+        findname.sendKeys(name);
+        // Academic period
+        driver.findElement(By.cssSelector("mat-form-field mat-select[aria-label='Academic Period']")).click();
+        driver.findElement(By.cssSelector(".cdk-overlay-container mat-option:first-child")).click();
+
+        // Grade level
         driver.findElement(By.cssSelector("mat-select[aria-label='Grade Level']")).click();
-        driver.findElement(By.xpath("//span[@class='mat-option-text']")).click();
-        driver.findElement(By.cssSelector("input[placeholder='Reg.Start']")).sendKeys("09/12/2000");
-        driver.findElement(By.cssSelector("input[placeholder='Reg.End']")).sendKeys("09/12/2005");
-        //Click on the document  type and choose any type then click on add
-        driver.findElement(By.cssSelector("mat-select[aria-label='Document Type']")).click();
-        driver.findElement(By.xpath("//span[contains(text(),'Report card')]")).click();
-        driver.findElement(By.cssSelector("div[fxflexalign='end center']")).click();
-        //cookie part
-        driver.findElement(By.xpath("//a[@class='cc-btn cc-dismiss']")).click();
+        driver.findElement(By.cssSelector(".cdk-overlay-container mat-option:first-child")).click();
+
+        // Reg start
+        WebElement findregStart = driver.findElement(By.cssSelector("input[placeholder='Reg.Start']"));
+        findregStart.sendKeys(regStart);
+        //  Reg end
+
+        WebElement findregEnd = driver.findElement(By.cssSelector("input[placeholder='Reg.End']"));
+        findregEnd.sendKeys(regEnd);
+
+
         //Click on save
-        driver.findElement(By.xpath("//button[@class='mat-raised-button mat-button-base mat-accent ng-star-inserted']")).click();
-        //Navigate to entrance exam
+        driver.findElement(By.cssSelector("div[fxlayoutalign='start stretch']>button:nth-child(2)>span")).click();
+
+        //Navigate to entrance exam again
         //Click on Entrance Exams
         driver.findElement(By.cssSelector("fuse-navigation .group-items > .nav-item:nth-child(2)")).click();
         driver.findElement(By.cssSelector("fuse-navigation .group-items > .nav-item:nth-child(2) > .children > .nav-item:nth-child(1)")).click();
@@ -71,15 +80,16 @@ public class TestCase2 {
 
         WebElement text = driver.findElement(By.xpath(" //td[contains(text(),'Hacer')]"));
         String excepted = text.getText();
-        Assert.assertEquals("Hacer", excepted);
+        Assert.assertEquals(name, excepted);
     }
     @Test
     public void remove()  {
         //remove
-        driver.findElement(By.xpath("//tr[1]//td[8]//div[1]//ms-delete-button[1]//button[1]")).click();
-        driver.findElement(By.xpath(" //span[contains(text(),'Yes')]")).click();
+        driver.findElement(By.cssSelector(" ms-table tbody tr  td ms-delete-button")).click();
+        driver.findElement(By.cssSelector("mat-dialog-container [type='submit']")).click();
+
         try {
-            wait.until( ExpectedConditions.visibilityOfElementLocated( By.xpath("//div[@class='toast-success ngx-toastr ng-trigger ng-trigger-flyInOut']" ) ) );
+            wait.until( ExpectedConditions.visibilityOfElementLocated( By.cssSelector("div[class='toast-success ngx-toastr ng-trigger ng-trigger-flyInOut']" ) ) );
             System.out.println("Removed success!");
         } catch( Exception e) {
             Assert.fail("Removed failure",e);
